@@ -2,7 +2,7 @@
   "name": "CookiePrime CMP",
   "description": "Cookie Consent Management Platform by CookiePrime - Google CMP Partner",
   "logo": "https://cookieprime.com/logo.png",
-  "categories": ["ANALYTICS", "UTILITY", "CUSTOM"],
+  "categories": ["ANALYTICS", "TAG_MANAGEMENT", "ADVERTISING"],
   "permissions": [
     {
       "name": "inject_scripts",
@@ -97,5 +97,5 @@
     "document.head.appendChild(script);",
     "",
     "console.log('[CookiePrime] ✅ Loader script injected via GTM');"
-  ].join("\n")
+  ]
 }
