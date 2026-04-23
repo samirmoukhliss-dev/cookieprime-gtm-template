@@ -5,7 +5,7 @@
   "categories": ["ANALYTICS", "TAG_MANAGEMENT", "ADVERTISING"],
   "permissions": [
     {
-      "name": "inject_scripts",
+      "name": "inject_script",
       "allowedUrls": [
         "https://storage.googleapis.com/cookieprime_bucket/*"
       ]
@@ -25,21 +25,22 @@
       ]
     },
     {
-      "name": "access_consent",
-      "isRequired": true
+      "name": "set_consent_state",
+      "consentType": ["ad_storage", "analytics_storage", "ad_user_data", "ad_personalization"]
     },
     {
-      "name": "logging",
-      "isRequired": true
+      "name": "log"
     },
     {
-      "name": "access_globals",
+      "name": "access_global_window",
       "keys": [
-        {
-          "key": "_cookiePrimeConfig",
-          "read": true,
-          "write": true
-        }
+        "_cookiePrimeConfig"
+      ]
+    },
+    {
+      "name": "write_global_window",
+      "keys": [
+        "_cookiePrimeConfig"
       ]
     }
   ],
