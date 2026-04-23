@@ -6,7 +6,7 @@ CookiePrime is a Consent Management Platform (CMP) that helps websites comply wi
 
 - **Google Consent Mode v2** - Full support for ad_storage, analytics_storage, ad_user_data, and ad_personalization signals
 - **IAB TCF v2.2 Compliant** - CMP ID: dMjJjND
-- **Multiple Banner Themes** - 6 professionally designed themes
+- **Multiple Banner Themes** - 4 professionally designed themes
 - **Automatic Language Detection** - Supports 20+ languages including Turkish and Arabic
 - **Region Detection** - Adapts to local legal requirements automatically
 - **Fail-Safe Mode** - Prevents tracking even if the banner is blocked by ad-blockers
@@ -20,14 +20,15 @@ CookiePrime is a Consent Management Platform (CMP) that helps websites comply wi
 5. Set the tag to fire on **All Pages** (or initialization trigger)
 6. Publish your container
 
+## Documentation
+
+**Full documentation with step-by-step guide:**  
+👉 [How It Works — 5 Simple Steps](https://cookieprime.com/how-it-works-web.html)
+
 ## Requirements
 
 - Google Tag Manager container (Web)
-- A CookiePrime account and Site ID
-
-## Documentation
-
-Full documentation: https://cookieprime.com/docs
+- A CookiePrime account and Site ID (get it from your dashboard after signup)
 
 ## Support
 
@@ -35,4 +36,4 @@ Email: support@cookieprime.com
 
 ---
 
-© 2024 CookiePrime LLC - All rights reserved
+© 2025 CookiePrime LLC - All rights reserved

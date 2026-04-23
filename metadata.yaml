@@ -1,5 +1,5 @@
 homepage: "https://cookieprime.com"
-documentation: "https://cookieprime.com/docs/gtm-integration"
+documentation: "https://cookieprime.com/how-it-works-web.html"
 versions:
-  - sha: INITIAL_COMMIT_SHA
+  - sha: 022e54606a223a83c7ca999d36c1044e604030a8
     changeNotes: "Initial release - CookiePrime CMP with Google Consent Mode v2 support. Includes IAB TCF v2.2 compliance (CMP ID: dMjJjND) and full Google Consent Mode v2 signals (ad_storage, analytics_storage, ad_user_data, ad_personalization)."
