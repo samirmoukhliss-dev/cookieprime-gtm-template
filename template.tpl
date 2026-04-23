@@ -20,8 +20,26 @@
     {
       "name": "send_xhr",
       "allowedUrls": [
-        "https://consent-storage-service-*.run.app/*",
-        "https://cookieprime.com/*"
+        "https://consent-storage-service-*.run.app/api/*",
+        "https://cookieprime.com/api/*"
+      ]
+    },
+    {
+      "name": "access_consent",
+      "isRequired": true
+    },
+    {
+      "name": "logging",
+      "isRequired": true
+    },
+    {
+      "name": "access_globals",
+      "keys": [
+        {
+          "key": "_cookiePrimeConfig",
+          "read": true,
+          "write": true
+        }
       ]
     }
   ],
@@ -56,46 +74,48 @@
     }
   ],
   "code": [
+    "const injectScript = require('injectScript');",
+    "const logToConsole = require('logToConsole');",
+    "const setDefaultConsentState = require('setDefaultConsentState');",
+    "const setInWindow = require('setInWindow');",
+    "",
     "// ===========================================",
     "// CookiePrime CMP - Google Consent Mode v2",
     "// IAB TCF v2.2 Compliant - CMP ID: dMjJjND",
     "// ===========================================",
     "",
-    "// Step 1: Set default consent mode (ALL DENIED - Google CMP required signals)",
-    "if (typeof gtag === 'function') {",
-    "  gtag('consent', 'default', {",
-    "    'ad_storage': 'denied',",
-    "    'analytics_storage': 'denied',",
-    "    'ad_user_data': 'denied',",
-    "    'ad_personalization': 'denied',",
-    "    'wait_for_update': 500",
-    "  });",
-    "  console.log('[CookiePrime] ✅ Default consent mode set (Google CMP compliant)');",
-    "} else {",
-    "  window._consentQueue = window._consentQueue || [];",
-    "  window._consentQueue.push({",
-    "    type: 'default',",
-    "    value: {",
-    "      ad_storage: 'denied',",
-    "      analytics_storage: 'denied',",
-    "      ad_user_data: 'denied',",
-    "      ad_personalization: 'denied',",
-    "      wait_for_update: 500",
-    "    }",
-    "  });",
-    "}",
+    "// Step 1: Set default consent mode",
+    "setDefaultConsentState({",
+    "  'ad_storage': 'denied',",
+    "  'analytics_storage': 'denied',",
+    "  'ad_user_data': 'denied',",
+    "  'ad_personalization': 'denied',",
+    "  'wait_for_update': 500",
+    "});",
     "",
-    "// Step 2: Load CookiePrime CMP SDK via loader",
-    "const script = document.createElement('script');",
-    "script.src = 'https://storage.googleapis.com/cookieprime_bucket/public/loader.js';",
-    "script.setAttribute('data-id', data.apiKey);",
-    "script.setAttribute('data-theme', data.theme);",
-    "if (data.devMode) {",
-    "  script.setAttribute('data-dev-mode', 'true');",
-    "}",
-    "script.setAttribute('data-gtm-integration', 'true');",
-    "document.head.appendChild(script);",
+    "logToConsole('[CookiePrime] ✅ Default consent mode set via GTM API');",
     "",
-    "console.log('[CookiePrime] ✅ Loader script injected via GTM');"
+    "// Step 2: Pass configuration to window object",
+    "setInWindow('_cookiePrimeConfig', {",
+    "  apiKey: data.apiKey,",
+    "  theme: data.theme,",
+    "  devMode: data.devMode || false,",
+    "  gtmIntegration: true",
+    "}, true);",
+    "",
+    "// Step 3: Inject the loader script",
+    "const url = 'https://storage.googleapis.com/cookieprime_bucket/public/loader.js';",
+    "",
+    "injectScript(url,",
+    "  function() {",
+    "    logToConsole('[CookiePrime] ✅ Loader script injected successfully');",
+    "    data.gtmOnSuccess();",
+    "  },",
+    "  function() {",
+    "    logToConsole('[CookiePrime] ❌ Failed to inject loader script');",
+    "    data.gtmOnFailure();",
+    "  },",
+    "  'cookieprime_loader'",
+    ");"
   ]
 }
