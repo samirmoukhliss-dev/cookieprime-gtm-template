@@ -72,6 +72,40 @@ ___TEMPLATE_PARAMETERS___
     "checkboxText": "Enable for testing - bypasses domain verification",
     "simpleValueType": true,
     "displayName": "Development Mode"
+  },
+  {
+    "type": "CHECKBOX",
+    "name": "advancedMode",
+    "checkboxText": "Block tags before consent",
+    "simpleValueType": true,
+    "displayName": "Tag blocking",
+    "help": "If checked: tags are completely blocked. If unchecked: tags load but stay \"denied\" until user consents"
+  },
+  {
+    "type": "SELECT",
+    "name": "waitForUpdate",
+    "displayName": "User response time",
+    "macrosInSelect": true,
+    "selectItems": [
+      {
+        "value": 0,
+        "displayValue": "0 ms - Tags load immediately (with denied consent)"
+      },
+      {
+        "value": 500,
+        "displayValue": "500 ms - Default (recommended)"
+      },
+      {
+        "value": 1000,
+        "displayValue": "1000 ms - Slower (if you have loading issues)"
+      },
+      {
+        "value": 2000,
+        "displayValue": "2000 ms - Very slow (for testing only)"
+      }
+    ],
+    "simpleValueType": true,
+    "help": "How long the page waits for the user to click \"Accept\" or \"Reject\" before loading Google tags."
   }
 ]
 
@@ -89,22 +123,23 @@ const setInWindow = require('setInWindow');
 // IAB TCF v2.2 Compliant - CMP ID: dMjJjND
 // ===========================================
 
-// Step 1: Set default consent mode
+// Step 1: Set default consent mode (Dynamically pulling your new dropdown value)
 setDefaultConsentState({
   'ad_storage': 'denied',
   'analytics_storage': 'denied',
   'ad_user_data': 'denied',
   'ad_personalization': 'denied',
-  'wait_for_update': 500
+  'wait_for_update': data.waitForUpdate ? data.waitForUpdate : 500
 });
 
 logToConsole('[CookiePrime] ✅ Default consent mode set via GTM API');
 
-// Step 2: Pass configuration to window object
+// Step 2: Pass configuration to window object (Including the new Advanced Mode)
 setInWindow('_cookiePrimeConfig', {
   apiKey: data.apiKey,
   theme: data.theme,
   devMode: data.devMode || false,
+  advancedMode: data.advancedMode || false,
   gtmIntegration: true
 }, true);
 
@@ -391,6 +426,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 23/04/2026 13:05:11
+Created on 25/04/2026 01:28:10
 
 
