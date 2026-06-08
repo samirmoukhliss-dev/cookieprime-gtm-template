@@ -49,11 +49,23 @@ const injectScript = require('injectScript');
 const logToConsole = require('logToConsole');
 const setInWindow = require('setInWindow');
 const createQueue = require('createQueue');
+const setDefaultConsentState = require('setDefaultConsentState');
 
 // ============================================
-// STEP 1: SET DEVELOPER ID (Requirement iv)
+// STEP 1: SET DEFAULT CONSENT STATE (Minimal)
 // ============================================
-// createQueue safely accesses or creates window.dataLayer
+setDefaultConsentState({
+  'ad_storage': 'denied',
+  'analytics_storage': 'denied',
+  'ad_user_data': 'denied',
+  'ad_personalization': 'denied',
+  'wait_for_update': 500
+});
+logToConsole('[CookiePrime] ✅ Default consent state set (will be updated by loader)');
+
+// ============================================
+// STEP 2: SET DEVELOPER ID (Requirement iv)
+// ============================================
 const dataLayerPush = createQueue('dataLayer');
 dataLayerPush({
   'developer_id.dMjJjND': true,
@@ -62,18 +74,16 @@ dataLayerPush({
 logToConsole('[CookiePrime] ✅ Developer ID set in dataLayer');
 
 // ============================================
-// STEP 2: PASS API KEY TO WINDOW
+// STEP 3: PASS API KEY TO WINDOW
 // ============================================
-// setInWindow safely writes to window._cookiePrimeConfig
 setInWindow('_cookiePrimeConfig', {
   apiKey: data.apiKey,
   gtmIntegration: true
 }, true);
-
 logToConsole('[CookiePrime] 📦 Configuration set for API Key:', data.apiKey);
 
 // ============================================
-// STEP 3: INJECT LOADER SCRIPT
+// STEP 4: INJECT LOADER SCRIPT
 // ============================================
 const scriptUrl = 'https://storage.googleapis.com/cookieprime_bucket/public/loader.js';
 injectScript(scriptUrl, 
@@ -199,6 +209,152 @@ ___WEB_PERMISSIONS___
       "isEditedByUser": true
     },
     "isRequired": true
+  },
+  {
+    "instance": {
+      "key": {
+        "publicId": "access_consent",
+        "versionId": "1"
+      },
+      "param": [
+        {
+          "key": "consentTypes",
+          "value": {
+            "type": 2,
+            "listItem": [
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "consentType"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "ad_storage"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  }
+                ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "consentType"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "analytics_storage"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  }
+                ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "consentType"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "ad_user_data"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  }
+                ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "consentType"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "ad_personalization"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "clientAnnotations": {
+      "isEditedByUser": true
+    },
+    "isRequired": true
   }
 ]
 
@@ -210,6 +366,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 08/06/2026 15:41:42
+Created on 08/06/2026 16:24:17
 
 
