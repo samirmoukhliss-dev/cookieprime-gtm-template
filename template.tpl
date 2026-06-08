@@ -39,121 +39,51 @@ ___TEMPLATE_PARAMETERS___
         "type": "NON_EMPTY"
       }
     ]
-  },
-  {
-    "type": "SELECT",
-    "name": "theme",
-    "displayName": "Banner Theme",
-    "macrosInSelect": true,
-    "selectItems": [
-      {
-        "value": 2,
-        "displayValue": "Modern"
-      },
-      {
-        "value": 4,
-        "displayValue": "Classic"
-      },
-      {
-        "value": 5,
-        "displayValue": "Minimal"
-      },
-      {
-        "value": 7,
-        "displayValue": "Premium"
-      }
-    ],
-    "simpleValueType": true,
-    "defaultValue": 5
-  },
-  {
-    "type": "CHECKBOX",
-    "name": "devMode",
-    "checkboxText": "Enable for testing - bypasses domain verification",
-    "simpleValueType": true,
-    "displayName": "Development Mode"
-  },
-  {
-    "type": "CHECKBOX",
-    "name": "advancedMode",
-    "checkboxText": "Block tags before consent",
-    "simpleValueType": true,
-    "displayName": "Tag blocking",
-    "help": "If checked: tags are completely blocked. If unchecked: tags load but stay \"denied\" until user consents"
-  },
-  {
-    "type": "SELECT",
-    "name": "waitForUpdate",
-    "displayName": "User response time",
-    "macrosInSelect": true,
-    "selectItems": [
-      {
-        "value": 0,
-        "displayValue": "0 ms - Tags load immediately (with denied consent)"
-      },
-      {
-        "value": 500,
-        "displayValue": "500 ms - Default (recommended)"
-      },
-      {
-        "value": 1000,
-        "displayValue": "1000 ms - Slower (if you have loading issues)"
-      },
-      {
-        "value": 2000,
-        "displayValue": "2000 ms - Very slow (for testing only)"
-      }
-    ],
-    "simpleValueType": true,
-    "help": "How long the page waits for the user to click \"Accept\" or \"Reject\" before loading Google tags."
   }
 ]
 
 
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
-// Enter your template code here.
 const injectScript = require('injectScript');
 const logToConsole = require('logToConsole');
-const setDefaultConsentState = require('setDefaultConsentState');
 const setInWindow = require('setInWindow');
+const createQueue = require('createQueue');
 
-// ===========================================
-// CookiePrime CMP - Google Consent Mode v2
-// IAB TCF v2.2 Compliant - CMP ID: dMjJjND
-// ===========================================
-
-// Step 1: Set default consent mode (Dynamically pulling your new dropdown value)
-setDefaultConsentState({
-  'ad_storage': 'denied',
-  'analytics_storage': 'denied',
-  'ad_user_data': 'denied',
-  'ad_personalization': 'denied',
-  'wait_for_update': data.waitForUpdate ? data.waitForUpdate : 500
+// ============================================
+// STEP 1: SET DEVELOPER ID (Requirement iv)
+// ============================================
+// createQueue safely accesses or creates window.dataLayer
+const dataLayerPush = createQueue('dataLayer');
+dataLayerPush({
+  'developer_id.dMjJjND': true,
+  'event': 'cookieprime_gtm_init'
 });
+logToConsole('[CookiePrime] ✅ Developer ID set in dataLayer');
 
-logToConsole('[CookiePrime] ✅ Default consent mode set via GTM API');
-
-// Step 2: Pass configuration to window object (Including the new Advanced Mode)
+// ============================================
+// STEP 2: PASS API KEY TO WINDOW
+// ============================================
+// setInWindow safely writes to window._cookiePrimeConfig
 setInWindow('_cookiePrimeConfig', {
   apiKey: data.apiKey,
-  theme: data.theme,
-  devMode: data.devMode || false,
-  advancedMode: data.advancedMode || false,
   gtmIntegration: true
 }, true);
 
-// Step 3: Inject the loader script
-const url = 'https://storage.googleapis.com/cookieprime_bucket/public/loader.js';
+logToConsole('[CookiePrime] 📦 Configuration set for API Key:', data.apiKey);
 
-injectScript(url, 
+// ============================================
+// STEP 3: INJECT LOADER SCRIPT
+// ============================================
+const scriptUrl = 'https://storage.googleapis.com/cookieprime_bucket/public/loader.js';
+injectScript(scriptUrl, 
   function() {
     logToConsole('[CookiePrime] ✅ Loader script injected successfully');
-    data.gtmOnSuccess(); 
+    data.gtmOnSuccess();
   }, 
   function() {
     logToConsole('[CookiePrime] ❌ Failed to inject loader script');
-    data.gtmOnFailure(); 
+    data.gtmOnFailure();
   }, 
   'cookieprime_loader'
 );
@@ -269,152 +199,6 @@ ___WEB_PERMISSIONS___
       "isEditedByUser": true
     },
     "isRequired": true
-  },
-  {
-    "instance": {
-      "key": {
-        "publicId": "access_consent",
-        "versionId": "1"
-      },
-      "param": [
-        {
-          "key": "consentTypes",
-          "value": {
-            "type": 2,
-            "listItem": [
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "consentType"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "ad_storage"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "consentType"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "analytics_storage"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "consentType"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "ad_user_data"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "consentType"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "ad_personalization"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "clientAnnotations": {
-      "isEditedByUser": true
-    },
-    "isRequired": true
   }
 ]
 
@@ -426,6 +210,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 25/04/2026 01:28:10
+Created on 08/06/2026 15:41:42
 
 
