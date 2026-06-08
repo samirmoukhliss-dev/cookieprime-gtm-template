@@ -1,5 +1,5 @@
 homepage: "https://cookieprime.com"
 documentation: "https://cookieprime.com/how-it-works-web.html"
 versions:
-  - sha: dafba96ed3c57e46bf4fcc28e9201787e0fefeab
+  - sha: 778d7b270ae91938cd7d4a4fa9b0de5843da3363
     changeNotes: "Updated to v3.0.2: Removed inline config; shifted logic to backend dashboard to ensure strict Google CMP compliance and prevent conflicting wait_for_update settings."
